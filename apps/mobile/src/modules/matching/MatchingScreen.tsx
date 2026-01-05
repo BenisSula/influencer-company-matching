@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { PRIMARY_COLOR, BACKGROUND_COLOR } from '../../constants/colors';
+import { theme } from '../../theme';
 
 export default function MatchingScreen() {
   return (
@@ -15,11 +15,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: BACKGROUND_COLOR,
+    backgroundColor: theme.colors.background,
   },
   title: {
     fontSize: 24,
-    color: PRIMARY_COLOR,
-    fontFamily: 'Poppins_700Bold',
+    color: theme.colors.primary,
+    fontFamily: theme.fonts.heading,
   },
 });
