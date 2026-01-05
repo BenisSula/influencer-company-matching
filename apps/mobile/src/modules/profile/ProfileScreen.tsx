@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { PRIMARY_COLOR, BACKGROUND_COLOR } from '../../constants/colors';
 
 export default function ProfileScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Profile Screen</Text>
+      <Text style={styles.title}>Profile Screen</Text>
     </View>
   );
 }
@@ -14,9 +15,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: BACKGROUND_COLOR,
   },
-  text: {
+  title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    color: PRIMARY_COLOR,
+    fontFamily: 'Poppins_700Bold',
   },
 });

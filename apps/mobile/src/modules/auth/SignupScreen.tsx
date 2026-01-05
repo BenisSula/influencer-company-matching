@@ -2,10 +2,10 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { PRIMARY_COLOR, BACKGROUND_COLOR } from '../../constants/colors';
 
-export default function MatchingScreen() {
+export default function SignupScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Matching Screen</Text>
+      <Text style={styles.title}>Signup Screen</Text>
     </View>
   );
 }
