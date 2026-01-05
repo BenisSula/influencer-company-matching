@@ -1,4 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserRole } from '@prisma/client';
@@ -7,7 +8,10 @@ import { UserRole } from '@prisma/client';
 export class AuthService {
   private readonly SALT_ROUNDS = 10;
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, this.SALT_ROUNDS);
@@ -18,6 +22,14 @@ export class AuthService {
     hashedPassword: string,
   ): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword);
+  }
+
+  private signToken(userId: string, email: string, role: string) {
+    return this.jwtService.sign({
+      sub: userId,
+      email,
+      role,
+    });
   }
 
   async signup(data: {
@@ -47,7 +59,12 @@ export class AuthService {
 
     // Never return password
     const { password, ...safeUser } = user;
-    return safeUser;
+    const token = this.signToken(user.id, user.email, user.role);
+
+    return {
+      user: safeUser,
+      token,
+    };
   }
 
   async login(data: { email: string; password: string }) {
@@ -69,6 +86,11 @@ export class AuthService {
     }
 
     const { password, ...safeUser } = user;
-    return safeUser;
+    const token = this.signToken(user.id, user.email, user.role);
+
+    return {
+      user: safeUser,
+      token,
+    };
   }
 }
