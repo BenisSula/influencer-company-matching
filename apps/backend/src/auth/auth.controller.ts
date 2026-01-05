@@ -18,4 +18,15 @@ export class AuthController {
   ) {
     return this.authService.signup(body);
   }
+
+  @Post('login')
+  async login(
+    @Body()
+    body: {
+      email: string;
+      password: string;
+    },
+  ) {
+    return this.authService.login(body);
+  }
 }

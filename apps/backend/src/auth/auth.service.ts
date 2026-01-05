@@ -49,4 +49,26 @@ export class AuthService {
     const { password, ...safeUser } = user;
     return safeUser;
   }
+
+  async login(data: { email: string; password: string }) {
+    const user = await this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (!user) {
+      throw new BadRequestException('Invalid credentials');
+    }
+
+    const isPasswordValid = await this.comparePassword(
+      data.password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new BadRequestException('Invalid credentials');
+    }
+
+    const { password, ...safeUser } = user;
+    return safeUser;
+  }
 }
