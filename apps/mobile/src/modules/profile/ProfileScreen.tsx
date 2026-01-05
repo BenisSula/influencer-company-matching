@@ -2,17 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { theme } from '../../theme';
 import { getProfile, UserProfile } from './profileService';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(false);
+  const { token } = useAuth();
 
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!token) {
+        return;
+      }
       setLoading(true);
       try {
-        // Replace 'dummy-token' with real token from auth context
-        const data = await getProfile('dummy-token');
+        const data = await getProfile(token);
         setProfile(data);
       } catch (error: unknown) {
         const errorMessage =
@@ -25,7 +29,7 @@ export default function ProfileScreen() {
     };
 
     fetchProfile();
-  }, []);
+  }, [token]);
 
   if (loading) {
     return (

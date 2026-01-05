@@ -2,16 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { theme } from '../../theme';
 import { getChats, ChatMessage } from './chatService';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
+  const { token } = useAuth();
 
   useEffect(() => {
     const fetchChats = async () => {
+      if (!token) {
+        return;
+      }
       setLoading(true);
       try {
-        const data = await getChats('dummy-token');
+        const data = await getChats(token);
         setMessages(data);
       } catch (error: unknown) {
         const errorMessage =
@@ -24,7 +29,7 @@ export default function ChatScreen() {
     };
 
     fetchChats();
-  }, []);
+  }, [token]);
 
   const renderItem = ({ item }: { item: ChatMessage }) => (
     <View style={styles.card}>

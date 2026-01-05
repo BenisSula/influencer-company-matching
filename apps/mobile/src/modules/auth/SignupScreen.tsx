@@ -2,18 +2,35 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { theme } from '../../theme';
 import { signupUser } from './authService';
+import { useAuth } from '../../contexts/AuthContext';
+import { UserProfile } from '../profile/profileService';
 
 export default function SignupScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleSignup = async () => {
     setLoading(true);
     try {
       const data = await signupUser({ name, email, password });
-      Alert.alert('Success', `Account created for ${data.name}`);
+      // Handle different response formats
+      const token = data.token || data.accessToken || '';
+      const userProfile: UserProfile = data.user || {
+        id: data.id || '',
+        name: data.name || name,
+        email: data.email || email,
+        followersCount: data.followersCount || 0,
+        followingCount: data.followingCount || 0,
+      };
+      if (token) {
+        login(token, userProfile);
+        Alert.alert('Success', `Account created for ${userProfile.name}`);
+      } else {
+        Alert.alert('Error', 'Invalid response from server');
+      }
     } catch (error: unknown) {
       const errorMessage =
         (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||

@@ -2,16 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { theme } from '../../theme';
 import { getMatches, MatchItem } from './matchingService';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function MatchingScreen() {
   const [matches, setMatches] = useState<MatchItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const { token } = useAuth();
 
   useEffect(() => {
     const fetchMatches = async () => {
+      if (!token) {
+        return;
+      }
       setLoading(true);
       try {
-        const data = await getMatches('dummy-token');
+        const data = await getMatches(token);
         setMatches(data);
       } catch (error: unknown) {
         const errorMessage =
@@ -24,7 +29,7 @@ export default function MatchingScreen() {
     };
 
     fetchMatches();
-  }, []);
+  }, [token]);
 
   const renderItem = ({ item }: { item: MatchItem }) => (
     <View style={styles.card}>

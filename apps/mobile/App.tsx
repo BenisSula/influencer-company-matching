@@ -1,5 +1,6 @@
 import React from 'react';
 import AppNavigator from './src/navigation/AppNavigator';
+import { AuthProvider } from './src/contexts/AuthContext';
 import { useFonts, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { Roboto_400Regular } from '@expo-google-fonts/roboto';
 import { View, ActivityIndicator } from 'react-native';
@@ -27,5 +28,9 @@ export default function App() {
     );
   }
 
-  return <AppNavigator />;
+  return (
+    <AuthProvider>
+      <AppNavigator />
+    </AuthProvider>
+  );
 }
