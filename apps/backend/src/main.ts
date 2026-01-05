@@ -4,12 +4,12 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT ?? 3000;
-  
+
   try {
     await app.listen(port);
     console.log(`🚀 Application is running on: http://localhost:${port}`);
-  } catch (error) {
-    if (error.code === 'EADDRINUSE') {
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'EADDRINUSE') {
       console.error(`❌ Port ${port} is already in use.`);
       console.error(`💡 To fix this, run one of the following:`);
       console.error(`   1. Stop the existing process: taskkill /F /PID <process_id>`);
@@ -20,4 +20,4 @@ async function bootstrap() {
     throw error;
   }
 }
-bootstrap();
+void bootstrap();
